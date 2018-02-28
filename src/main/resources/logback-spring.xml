@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <configuration>
+
+    <property name="log.path" value="/var/log/tomcat/blog"/>
+
     <!--指定显示方式-->
     <appender name="consoleLog" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
@@ -22,7 +25,7 @@
             </pattern>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/var/log/tomcat/blog/info.%d.log</fileNamePattern>
+            <fileNamePattern>${log.path}/info.%d.log</fileNamePattern>
         </rollingPolicy>
     </appender>
 
@@ -36,7 +39,7 @@
             </pattern>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/var/log/tomcat/blog/error.%d.log</fileNamePattern>
+            <fileNamePattern>${log.path}/error.%d.log</fileNamePattern>
         </rollingPolicy>
     </appender>
 

@@ -10,6 +10,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
@@ -42,6 +44,12 @@ public class User implements Serializable {
 
     @Column(name = "avatar", length = 200)
     private String avatar; //头像地址
+
+    @Column(name = "create_time")
+    private LocalDateTime createTime; //创建时间
+
+    @Column(name = "last_login")
+    private LocalDateTime lastLogin; //上次登录时间
 
     @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinTable(name = "user_role", joinColumns = { @JoinColumn(name = "user_id") },

@@ -15,8 +15,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import java.time.LocalDateTime;
 
 /**
  * 用户管理 controller
@@ -106,6 +106,7 @@ public class UserManagerController {
             //新增用户
             //为初始密码加密
             user.setEncodePassword(initPassword);
+            user.setCreateTime(LocalDateTime.now()); //创建时间为当前日期
         }
 
         return user;
