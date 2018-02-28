@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4" data-th-fragment="header">
+
+<head data-th-fragment="static (pageTitle)">
+    <meta charset="UTF-8">
+
+    <!--移动设备优先-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:headers="${_csrf.headerName}">
+
+    <title th:text="${pageTitle}">系统管理</title>
+
+    <link rel="shortcut icon" href="../../static/images/favicon.ico" type="image/x-icon" />
+
+
+</head>
+<body>
+
+</body>
+</html>

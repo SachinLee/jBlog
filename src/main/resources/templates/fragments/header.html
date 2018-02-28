@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4" data-th-fragment="header">
+<head data-th-fragment="static (pageTitle)">
+    <meta charset="UTF-8">
+    <!--移动设备优先-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!--CSRF-->
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+
+    <title th:text="${pageTitle}">Title</title>
+
+    <link href="../../static/css/font-awesome.css" th:href="@{/css/font-awesome.css}" rel="stylesheet">
+
+    <link href="../../static/lib/bootstrap/bootstrap.min.css" th:href="@{/lib/bootstrap/bootstrap.min.css}" rel="stylesheet">
+
+    <link href="../../static/css/index.css" th:href="@{/css/index.css}" rel="stylesheet">
+
+
+    <script type="text/javascript" src="../../static/lib/require.js" th:src="@{/lib/require.js}"></script>
+    <script type="text/javascript" src="../../static/js/main.js" th:src="@{/js/main.js}"></script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-sm navbar-dark fix-top nav-header">
+        <div class="container">
+            <a class="navbar-brand" href="/" th:href="@{/}">SachinBlog</a>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/" th:href="@{/}">主页</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/" th:href="@{/}">最新</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/" th:href="@{/}">最热</a>
+                </li>
+
+                <form class="form-inline">
+                    <input class="form-control" type="text" placeholder="Search">
+                    <button class="btn btn-info" type="submit">搜索</button>
+                </form>
+            </ul>
+        </div>
+    </nav>
+
+</body>
+
+</html>
