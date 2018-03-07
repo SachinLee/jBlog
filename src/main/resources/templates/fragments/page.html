@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en"
+    xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+</head>
+<body>
+    <div data-th-fragment="page" class="pagination pull-right">
+        <th:block th:object="${page.pageConfig}">
+            <span>共有<span th:text="${page.pageConfig.rowCount}"></span>条，页次<span th:text="${page.pageConfig.pageNum}"></span>/<span th:text="${page.pageConfig.pageCount}"></span>&emsp;</span>
+
+                <li th:if="${page.pageConfig.pageNum gt 1}">
+                    <a href="javascript:goPage(1)" class="">首页</a>
+                </li>
+                <li th:if="${page.pageConfig.pageNum gt 1}">
+                    <a th:href="'javascript:goPage('+${page.pageConfig.pageNum - 1}+');'">上一页</a>
+                </li>
+
+                <th:block th:if="${page.pageConfig.pageCount le 5}">
+                    <th:block th:each="i : ${#numbers.sequence(1, page.pageConfig.pageCount)}">
+                        <li th:if="${i eq page.pageConfig.pageNum}" th:class="active">
+                            <a th:href="'javascript:goPage('+${page.pageConfig.pageNum}+');'" th:text="${i}" >1</a>
+                        </li>
+                    </th:block>
+                </th:block>
+
+                <th:block th:if="${page.pageConfig.pageCount gt 5}">
+                    <li th:if="${page.pageConfig.pageNum == 1}" th:class="active">
+                        <a href="javascript:goPage(1)" >1</a>
+                    </li>
+
+                    <!--往前数4个-->
+                    <th:block th:if="${page.pageConfig.pageNum gt 5}">
+                        <li>...</li>
+                        <th:block th:each="i : ${#numbers.sequence(0,4)}">
+                            <li th:if="${i == 0}" th:class="active">
+                                <a th:href="'javascript:goPage('+${page.pageConfig.pageNum - i}+');'" th:text="${page.pageConfig.pageNum - i}" >2</a>
+                            </li>
+                        </th:block>
+                    </th:block>
+
+                    <!--往后数4个-->
+                    <th:block th:if="${page.pageConfig.pageNum gt 1}" >
+                        <th:block th:if="${page.pageConfig.pageNum le (page.pageConfig.pageCount - 4)}">
+                            <th:block th:each="i : ${#numbers.sequence(0,4)}">
+                                <li th:if="${i == 0}" th:class="active">
+                                    <a th:href="'javascript:goPage('+${page.pageConfig.pageNum + i}+');'" th:text="${page.pageConfig.pageNum + i}">2</a>
+                                </li>
+                            </th:block>
+                            <li>...</li>
+                        </th:block>
+
+                        <th:block th:if="${page.pageConfig.pageNum gt (page.pageConfig.pageCount - 4)}">
+                            <th:block th:each="i : ${#numbers.sequence(0, ${page.pageConfig.pageCount - page.pageConfig.pageNum})}">
+                                <li  th:if="${i == 0}" th:class="active">
+                                    <a th:href="'javascript:goPage('+${page.pageConfig.pageNum + i}+');'" th:text="${page.pageConfig.pageNum + i}">2</a>
+                                </li>
+                            </th:block>
+                        </th:block>
+
+                    </th:block>
+
+
+                </th:block>
+
+                <li th:if="${page.pageConfig.pageNum lt page.pageConfig.pageCount}">
+                    <a th:href="'javascript:goPage('+${page.pageConfig.pageNum + 1}+');'">下一页</a>
+                </li>
+
+        </th:block>
+
+    </div>
+</body>
+</html>

@@ -1,6 +1,7 @@
 package cn.sachin.jaBlog.common;
 
 import java.io.Serializable;
+import java.util.List;
 
 public interface BaseService<T, ID extends Serializable> {
 
@@ -22,6 +23,6 @@ public interface BaseService<T, ID extends Serializable> {
 
     public T get(ID id);
 
-    public Iterable<T> getAll();
+    public List<T> getAll();
 
 }

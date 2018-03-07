@@ -2,6 +2,7 @@ package cn.sachin.jaBlog.service.impl;
 
 import cn.sachin.jaBlog.common.BaseServiceImpl;
 import cn.sachin.jaBlog.common.PageConfig;
+import cn.sachin.jaBlog.common.PageList;
 import cn.sachin.jaBlog.common.SecurityUser;
 import cn.sachin.jaBlog.dao.UserDao;
 import cn.sachin.jaBlog.pojo.Role;
@@ -23,7 +24,7 @@ import java.util.List;
 
 @Service
 @Transactional
-public class UserServiceImpl extends BaseServiceImpl<User, String> implements UserService, UserDetailsService {
+public class UserServiceImpl extends BaseServiceImpl<User, String> implements UserService {
     @Autowired
     private UserDao userDao;
 
@@ -55,7 +56,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, String> implements Us
     }
 
     @Override
-    public Page<User> getUserPage(User user, PageConfig pageConfig) {
+    public PageList<User> getUserPage(User user, PageConfig pageConfig) {
         ExampleMatcher matcher = ExampleMatcher.matching() //构建对象
                 .withNullHandler(ExampleMatcher.NullHandler.IGNORE) //忽略null值
                 .withMatcher("loginName", ExampleMatcher.GenericPropertyMatchers.contains())
@@ -64,6 +65,39 @@ public class UserServiceImpl extends BaseServiceImpl<User, String> implements Us
         Page<User> page = userDao.findAll(Example.of(user, matcher),
                 new PageRequest(pageConfig.getPageNum() - 1, pageConfig.getPageSize()));
 
-        return page;
+        PageList<User> pageList = new PageList<>(page.getContent());
+
+        pageConfig.setPageCount(page.getTotalPages());
+        pageConfig.setRowCount(page.getTotalElements());
+
+        pageList.setPageConfig(pageConfig);
+
+        return pageList;
+    }
+
+    @Override
+    public User getUserByLogin(String loginName) {
+
+        return userDao.findByLoginName(loginName);
+    }
+
+    @Override
+    public User getUserByParams(User user) {
+
+        ExampleMatcher matcher = ExampleMatcher.matching()
+                .withNullHandler(ExampleMatcher.NullHandler.IGNORE)
+                .withMatcher("id", ExampleMatcher.GenericPropertyMatchers.contains())
+                .withMatcher("loginName", ExampleMatcher.GenericPropertyMatchers.contains())
+                .withMatcher("email", ExampleMatcher.GenericPropertyMatchers.contains());
+
+        User findUser = userDao.findOne(Example.of(user, matcher));
+
+        return findUser;
+    }
+
+    @Override
+    public User getUserByEmail(String email) {
+
+        return userDao.findByEmail(email);
     }
 }

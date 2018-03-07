@@ -1,10 +1,15 @@
 package cn.sachin.jaBlog.controller;
 
 import cn.sachin.jaBlog.common.PageConfig;
+import cn.sachin.jaBlog.common.PageList;
 import cn.sachin.jaBlog.common.ServerResult;
+import cn.sachin.jaBlog.pojo.Role;
 import cn.sachin.jaBlog.pojo.User;
+import cn.sachin.jaBlog.service.RoleService;
 import cn.sachin.jaBlog.service.UserService;
 import cn.sachin.jaBlog.util.ConstraintViolationExceptionHandler;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.mysql.fabric.Server;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 用户管理 controller
@@ -30,6 +36,8 @@ public class UserManagerController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private RoleService roleService;
 
     //通过配置文件，配置初始密码
     @Value("${init-password}")
@@ -41,13 +49,18 @@ public class UserManagerController {
      * @param pageConfig 分页信息
      * @return 返回用户列表信息
      */
+    @JsonView(User.UserSimpleInfo.class)
     @GetMapping(value = "/manager")
     public ModelAndView userManager(User user, PageConfig pageConfig) {
         ModelAndView model = new ModelAndView("admin/users/list");
 
-        Page<User> page = userService.getUserPage(user, pageConfig);
+        PageList<User> page = userService.getUserPage(user, pageConfig);
+
+        List<Role> roles = roleService.getAll();
 
         model.addObject("page", page);
+        model.addObject("user", user);
+        model.addObject("roles", roles);
 
         return model;
     }
@@ -59,6 +72,17 @@ public class UserManagerController {
      */
     @PostMapping(value = "/add")
     public ServerResult addUser(User user) {
+
+        User loginUser = userService.getUserByLogin(user.getLoginName());
+        if (loginUser != null) {
+            return ServerResult.createResultByErrorMsg("用户名已经存在");
+        }
+
+        User emailUser = userService.getUserByEmail(user.getEmail());
+        if (emailUser != null) {
+            return ServerResult.createResultByErrorMsg("邮箱已经存在");
+        }
+
         User userChanged = this.userHandler(user);
 
         try {
@@ -87,7 +111,43 @@ public class UserManagerController {
         return ServerResult.createResultBySuccessMsg("删除成功");
     }
 
+    @GetMapping(value = "/validateLogin/{loginName}")
+    public ServerResult validateLoginName(@PathVariable String loginName) {
 
+        try {
+            User user = userService.getUserByLogin(loginName);
+            if (user != null) {
+                return ServerResult.createResultByErrorMsg("用户名已经存在");
+            }
+
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            e.printStackTrace();
+            return ServerResult.createResultByError();
+        }
+
+        return ServerResult.createResultBySuccess();
+    }
+
+    @GetMapping(value = "/validateEmail/{email}")
+    public ServerResult validateEmail(@PathVariable String email) {
+        User queryUser = new User();
+        queryUser.setEmail(email);
+
+        ServerResult result = ServerResult.createResultBySuccess();
+        try {
+            User user = userService.getUserByParams(queryUser);
+            if (user != null) {
+                result = ServerResult.createResultByErrorMsg("邮箱已经存在");
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            e.printStackTrace();
+            result = ServerResult.createResultByError();
+        }
+
+        return result;
+    }
 
 
 
@@ -100,13 +160,16 @@ public class UserManagerController {
         if (StringUtils.isNoneBlank(user.getId())) {
             //更新用户
             //加上原来的密码
-            user.setPassword(userService.get(user.getId()).getPassword());
-
+            User oldUser = userService.get(user.getId());
+            //user.setPassword(oldUser.getPassword());
+            oldUser.setLoginName(user.getLoginName());
+            oldUser.setEmail(user.getEmail());
+            oldUser.setRoles(user.getRoles());
         } else {
             //新增用户
             //为初始密码加密
-            user.setEncodePassword(initPassword);
-            user.setCreateTime(LocalDateTime.now()); //创建时间为当前日期
+            user.setPassword(initPassword);
+            user.setEncodePassword(user.getPassword());
         }
 
         return user;
