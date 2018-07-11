@@ -1,6 +1,7 @@
 package cn.sachin.jaBlog.pojo;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
@@ -30,18 +31,21 @@ public class User implements Serializable {
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid")
     @Column(name = "id", length = 50)
+    @ApiModelProperty(value = "用户Id")
     private String id;
 
     @JsonView(UserSimpleInfo.class)
     @NotEmpty(message = "账号不能为空")
     @Size(min = 3, max = 20)
     @Column(name = "login_name", length = 20)
+    @ApiModelProperty(value = "用户账号")
     private String loginName;
 
     @JsonView(UserDetailsInfo.class)
     @NotEmpty(message = "密码不能为空")
     @Size(min = 6, max = 200)
     @Column(name = "password", length = 200)
+    @ApiModelProperty(value = "用户密码")
     private String password;
 
     @JsonView(UserSimpleInfo.class)
@@ -49,6 +53,7 @@ public class User implements Serializable {
     @Size(max = 50)
     @Email(message = "邮箱格式不正确")
     @Column(name = "email", length = 50)
+    @ApiModelProperty(value = "邮箱")
     private String email;
 
     @JsonView(UserSimpleInfo.class)
@@ -68,6 +73,7 @@ public class User implements Serializable {
     @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinTable(name = "user_role", joinColumns = { @JoinColumn(name = "user_id") },
         inverseJoinColumns = { @JoinColumn(name = "role_id") })
+    @ApiModelProperty(value = "用户角色")
     private Set<Role> roles;
 
     //密码加密

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
         xmlns:th="http://www.thymeleaf.org"
-        xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4" data-th-fragment="header">
-<head th:fragment="static (pageTitle)">
+        xmlns:sec="http://www.thymeleaf.org/extras/spring-security" data-th-fragment="header">
+<head th:fragment="common_header(title, links)">
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
 
@@ -10,7 +10,7 @@
     <meta name="_csrf" th:content="${_csrf.token}" />
     <meta name="_csrf_header" th:content="${_csrf.headerName}" />
 
-    <title th:text="${pageTitle}"></title>
+    <title th:replace="${title}"></title>
 
     <link rel="shortcut icon" href="../../static/images/favicon.ico" th:href="@{/images/favicon.ico}" type="image/x-icon" />
 
@@ -22,8 +22,8 @@
 
     <link href="../../static/css/index.css" th:href="@{/css/index.css}" rel="stylesheet"/>
 
-    <script type="text/javascript" src="../../static/lib/require.js" th:src="@{/lib/require.js}"></script>
-    <script type="text/javascript" src="../../static/js/main.js" th:src="@{/js/main.js}"></script>
+    <th:block th:replace="${links}"></th:block>
+
 </head>
 <body>
     <nav class="navbar navbar-default navbar-fixed-top" role="navigation" data-th-fragment="nav-header">
@@ -44,7 +44,6 @@
             </form>
 
 
-            <div>
             <!--如果登录了-->
             <ul class="nav navbar-nav navbar-right" sec:authorize="isAuthenticated()">
                 <li class="dropdown">
@@ -60,7 +59,6 @@
                     </ul>
                 </li>
             </ul>
-            </div>
         </div>
     </nav>
 
@@ -88,7 +86,7 @@
             </li>
 
             <li>
-                <a href="./charts.html">
+                <a href="#">
                     <i class="fa fa-calendar"></i>
                     图表统计
                 </a>
@@ -111,7 +109,8 @@
         <script type="text/javascript" th:inline="javascript">
             var basePath = /*[[@{/}]]*/;
         </script>
-
+        <script type="text/javascript" src="../../static/lib/require.js" th:src="@{/lib/require.js}"></script>
+        <script type="text/javascript" src="../../static/js/main.js" th:src="@{/js/main.js}"></script>
     </footer>
 </body>
 

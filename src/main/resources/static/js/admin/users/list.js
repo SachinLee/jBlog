@@ -44,19 +44,22 @@ require(['jquery', 'jqueryValidate', 'page'],function($){
 });
 
 function logiNameExist(login) {
-    if ($("#userForm").find("input[name='id']").val() == "") {
-        $.ajax({
-            url : basePath + "users/validateLogin/"+login,
-            type : 'GET',
-            success : function (result) {
-                if (result.code == 0) {
-                    return true;
-                }
+    var noExist = true;
+    $.ajax({
+        url : basePath + "users/validateLogin",
+        data : {
+            loginName :login,
+            id : $("#userForm").find("input[name='id']").val()
+        },
+        type : 'GET',
+        async :false,
+        success : function (result) {
+            if (result.status == 1) {
+                noExist = false;
             }
-        })
-        return false;
-    }
-    return true;
+        }
+    });
+    return noExist;
 }
 
 function emailPattern(email) {
@@ -66,19 +69,22 @@ function emailPattern(email) {
 }
 
 function emailExist(email) {
-    if ($("#userForm").find("input[name='id']").val() == "") {
-        $.ajax({
-            url : basePath + "users/validateEmail/"+email,
-            type : 'GET',
-            success : function (result) {
-                if (result.code == 0) {
-                    return true;
-                }
+    var noExist = true;
+    $.ajax({
+        url : basePath + "users/validateEmail",
+        data : {
+            email : email,
+            id : $("#userForm").find("input[name='id']").val()
+        },
+        type : 'GET',
+        async :false,
+        success : function (result) {
+            if (result.status == 1) {
+                noExist = false;
             }
-        })
-        return false;
-    }
-    return true;
+        }
+    })
+    return noExist;
 }
 
 function doQuery() {
@@ -153,6 +159,10 @@ function deleteUser(id) {
 function doSaveUser() {
     var csrfToken = $("meta[name='_csrf']").attr("content");
     var csrfHeader = $("meta[name='_csrf_header']").attr("content");
+
+    if (!$("#userForm").validate().form()) {
+        return false;
+    }
 
     $.ajax({
         url : basePath + "users/add",

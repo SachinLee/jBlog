@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: common_header(~{::title},~{::link})">
+    <title>添加博文</title>
+    <link rel="stylesheet" src="../../static/lib/editormd/style.css" th:src="@{/lib/editormd/style.css}"/>
+    <link rel="stylesheet" src="../../static/lib/editormd/editormd.min.css" th:src="@{/lib/editormd/editormd.css}"/>
+</head>
+<body>
+    <!--导航栏-->
+    <!--<div th:replace="fragments/header :: nav-header"></div>-->
+    <!--&lt;!&ndash;菜单栏&ndash;&gt;
+    <div th:replace="fragments/header :: sidebar"></div>-->
+
+    <div id="my-editormd" >
+        <textarea id="my-editormd-markdown-doc" name="my-editormd-markdown-doc" class="editormd-markdown-textarea" style="display:none;"></textarea>
+        <!-- 注意：name属性的值-->
+        <textarea id="my-editormd-html-code" name="my-editormd-html-code" class="editormd-html-textarea" style="display:none;"></textarea>
+    </div>
+
+
+    <!--<footer th:replace="fragments/header :: footer"></footer>-->
+
+    <script type="text/javascript" th:src="@{/lib/jquery-3.1.1.min.js}"></script>
+    <script type="text/javascript" th:src="@{/lib/bootstrap/bootstrap.min.js}"></script>
+    <script type="text/javascript" th:src="@{/lib/editormd/editormd.min.js}"></script>
+    <script type="text/javascript">
+        var basePath = [[@{/}]];
+        $(function () {
+            editormd("my-editormd", {
+                width : "90%",
+                height : 640,
+                syncScrolling : "single",
+                path : basePath+"lib/editormd/lib/",
+                saveHTMLToTextarea : true,                // 保存HTML到Textarea
+            });
+        })
+
+    </script>
+</body>
+</html>

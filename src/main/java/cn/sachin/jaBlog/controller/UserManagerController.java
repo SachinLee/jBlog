@@ -10,6 +10,8 @@ import cn.sachin.jaBlog.service.UserService;
 import cn.sachin.jaBlog.util.ConstraintViolationExceptionHandler;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.mysql.fabric.Server;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,11 +49,13 @@ public class UserManagerController {
      * 查询用户列表信息
      * @param user 用户查询条件
      * @param pageConfig 分页信息
-     * @return 返回用户列表信息
+     * @return 返回用户列表信息(不包含密码)
      */
     @JsonView(User.UserSimpleInfo.class)
     @GetMapping(value = "/manager")
-    public ModelAndView userManager(User user, PageConfig pageConfig) {
+    @ApiOperation(value = "查询用户分页列表")
+    public ModelAndView userManager(@ApiParam(value = "用户查询信息") User user,
+                                    @ApiParam(value = "分页信息") PageConfig pageConfig) {
         ModelAndView model = new ModelAndView("admin/users/list");
 
         PageList<User> page = userService.getUserPage(user, pageConfig);
@@ -72,13 +76,13 @@ public class UserManagerController {
      */
     @PostMapping(value = "/add")
     public ServerResult addUser(User user) {
-
-        User loginUser = userService.getUserByLogin(user.getLoginName());
+        //新建时，需要校验
+        User loginUser = userService.validateLogin(user.getLoginName(), user.getId());
         if (loginUser != null) {
             return ServerResult.createResultByErrorMsg("用户名已经存在");
         }
 
-        User emailUser = userService.getUserByEmail(user.getEmail());
+        User emailUser = userService.validateEmail(user.getEmail(), user.getId());
         if (emailUser != null) {
             return ServerResult.createResultByErrorMsg("邮箱已经存在");
         }
@@ -111,11 +115,11 @@ public class UserManagerController {
         return ServerResult.createResultBySuccessMsg("删除成功");
     }
 
-    @GetMapping(value = "/validateLogin/{loginName}")
-    public ServerResult validateLoginName(@PathVariable String loginName) {
+    @GetMapping(value = "/validateLogin")
+    public ServerResult validateLoginName(String loginName, String id) {
 
         try {
-            User user = userService.getUserByLogin(loginName);
+            User user = userService.validateLogin(loginName, id);
             if (user != null) {
                 return ServerResult.createResultByErrorMsg("用户名已经存在");
             }
@@ -129,14 +133,12 @@ public class UserManagerController {
         return ServerResult.createResultBySuccess();
     }
 
-    @GetMapping(value = "/validateEmail/{email}")
-    public ServerResult validateEmail(@PathVariable String email) {
-        User queryUser = new User();
-        queryUser.setEmail(email);
+    @GetMapping(value = "/validateEmail")
+    public ServerResult validateEmail(String email, String id) {
 
         ServerResult result = ServerResult.createResultBySuccess();
         try {
-            User user = userService.getUserByParams(queryUser);
+            User user = userService.validateEmail(email, id);
             if (user != null) {
                 result = ServerResult.createResultByErrorMsg("邮箱已经存在");
             }
@@ -165,6 +167,7 @@ public class UserManagerController {
             oldUser.setLoginName(user.getLoginName());
             oldUser.setEmail(user.getEmail());
             oldUser.setRoles(user.getRoles());
+            return oldUser;
         } else {
             //新增用户
             //为初始密码加密

@@ -2,9 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
 >
-<head th:replace="fragments/header :: static (pageTitle='用户管理')">
+<head th:replace="fragments/header :: common_header(~{::title}, _)">
     <meta charset="UTF-8"/>
-    <title>Title</title>
+    <title>用户管理</title>
 </head>
 <body>
     <div th:replace="fragments/header :: nav-header"></div>
@@ -19,7 +19,7 @@
 
         <div class="col-sm-12 col-lg-12">
             <form class="form-search form-inline" th:action="@{/users/manager}" th:object="${user}" id="searchForm">
-                <input type="hidden" id="pageNum" name="pageNum"/>
+                <input type="hidden" id="pageNum" name="pageNum" th:value="${page.pageConfig.pageNum}"/>
                 <input class="form-control col-sm-3 col-sm-offset-1 col-lg-offset-1"
                        type="text" name="loginName" th:value="*{loginName}" placeholder="请输入登录名称"/>
                 <input class="form-control col-sm-3 col-sm-offset-1 col-lg-offset-1"

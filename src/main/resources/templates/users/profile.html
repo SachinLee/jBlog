@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: common_header(~{::title},~{::link})">
+    <title>个人中心</title>
+    <link rel="stylesheet" href="../../static/lib/cropper/cropper.min.css" th:href="@{/lib/cropper/cropper.min.css}">
+    <link rel="stylesheet" href="../../static/lib/cropper/ImgCropping.css" th:href="@{/lib/cropper/ImgCropping.css}">
+</head>
+<body>
+    <div th:replace="fragments/header :: nav-header"></div>
+
+    <div class="container main" style="height: 100%;">
+        <div class="col-sm-4">
+            <img src="" th:if="${user.avatar} != ''" th:src="@{'/file/'+${user.avatar}}" id="finalImg" class="img-circle" alt="Cinque Terre" width="304" height="236">
+            <button id="replaceImg" class="l-btn">更换图片</button>
+        </div>
+
+        <div class="col-sm-8">
+
+            <div class="col-sm-8">
+                <form id="userForm" th:action="'/u/'+${user.loginName}+'/save'" method="post" th:object="${user}" class="form-horizontal" role="form">
+                    <input type="hidden" id="id" name="id" th:value="*{id}" />
+                    <input type="hidden" id="avatar" name="avatar" th:value="*{avatar}">
+                    <div class="form-group">
+                        <label for="loginName" class="control-label col-sm-3">登录名称</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="loginName" name="loginName" th:value="*{loginName}" placeholder="请输入名字"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email" class="control-label col-sm-3">邮箱</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="email" name="email" th:value="*{email}" placeholder="请输入名字"/>
+                        </div>
+                    </div>
+                    <div class="form-group pull-right">
+                        <button type="submit" class="btn btn-success">保存</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!--图片裁剪框 start-->
+    <div style="display: none" class="tailoring-container">
+        <div class="black-cloth" onclick="closeTailor(this)"></div>
+        <div class="tailoring-content">
+            <div class="tailoring-content-one">
+                <label title="上传图片" for="chooseImg" class="l-btn choose-btn">
+                    <input type="file" accept="image/jpg,image/jpeg,image/png" name="file" id="chooseImg" class="hidden" onchange="selectImg(this)"/>
+                    选择图片
+                </label>
+                <div class="close-tailoring"  onclick="closeTailor(this)">×</div>
+            </div>
+            <div class="tailoring-content-two">
+                <div class="tailoring-box-parcel">
+                    <img id="tailoringImg">
+                </div>
+                <div class="preview-box-parcel">
+                    <p>图片预览：</p>
+                    <div class="square previewImg"></div>
+                    <div class="circular previewImg"></div>
+                </div>
+            </div>
+            <div class="tailoring-content-three">
+                <button class="l-btn cropper-reset-btn">复位</button>
+                <button class="l-btn cropper-rotate-btn">旋转</button>
+                <button class="l-btn cropper-scaleX-btn">换向</button>
+                <button class="l-btn sureCut" id="sureCut">确定</button>
+            </div>
+        </div>
+    </div>
+    <!--图片裁剪框 end-->
+
+<footer th:replace="fragments/header :: footer"></footer>
+<script type="text/javascript" src="../../static/js/users/profile.js" th:src="@{/js/users/profile.js}"></script>
+</body>
+</html>

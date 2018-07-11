@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/header :: static (pageTitle='角色管理')">
+<head th:replace="fragments/header :: common_header(~{::title},_)">
+    <title>角色管理</title>
 </head>
 <body>
     <div th:replace="fragments/header :: nav-header"></div>

@@ -6,5 +6,5 @@ public abstract class Constant {
 
     public static final Integer DEFAULT_PAGESIZE = 10; //分页显示默认每页展示的条目数
 
-    public static final String INIT_PASSWORD = "init1234";
+    public static final String MONGO_AVATAR = "AVATAR";
 }

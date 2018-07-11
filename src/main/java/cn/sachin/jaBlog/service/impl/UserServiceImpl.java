@@ -100,4 +100,14 @@ public class UserServiceImpl extends BaseServiceImpl<User, String> implements Us
 
         return userDao.findByEmail(email);
     }
+
+    @Override
+    public User validateLogin(String loginName, String id) {
+        return userDao.findByLoginNameAndIdNot(loginName, id);
+    }
+
+    @Override
+    public User validateEmail(String email, String id) {
+        return userDao.findByEmailAndIdNot(email, id);
+    }
 }
